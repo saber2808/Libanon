@@ -1,0 +1,120 @@
+﻿@model Libanon.Models.Book
+
+@{
+    ViewBag.Title = "ActiveBooking";
+}
+
+<h2>ActiveBooking</h2>
+
+<div>
+    <h4>Đã xác nhận yêu cầu mượn sách</h4>
+    <h5>Thông tin sách</h5>
+    <hr />
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Title)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Title)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.ImageUrl)
+                </dt>
+
+                <td>
+                    <img src="@Url.Content("~/Content/images/"+Model.ImageUrl)" height="100" width="100" />
+                </td>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Authors)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Authors)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Publisher)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Publisher)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Category)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Category)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.EmailBorrower)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.EmailBorrower)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.NameBorrower)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.NameBorrower)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.PhoneBorrower)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.PhoneBorrower)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.DescBorrower)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DescBorrower)
+                </dd>
+
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.CurrentUser.Email)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.CurrentUser.Email)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.CurrentUser.FullName)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.CurrentUser.FullName)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.CurrentUser.PhoneNumber)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.CurrentUser.PhoneNumber)
+                </dd>
+             </dl>
+        </div>
+    </div>
+    
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

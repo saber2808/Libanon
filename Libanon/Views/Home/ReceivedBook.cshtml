@@ -1,0 +1,18 @@
+﻿@model Libanon.Models.Book
+
+@{
+    ViewBag.Title = "ReceivedBook";
+}
+
+<h2>ReceivedBook</h2>
+
+<div>
+    <h4>Xác nhận thành công</h4>
+    <h4>Nếu người nhận xác nhận đã nhận được sách và người cho mượn xác nhận đã giao sách đi</h4>
+    <hr />
+    <h4>Sách với tiêu đề @Html.DisplayNameFor(model => model.Title) sẽ được gỡ khỏi kệ sách</h4>
+
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

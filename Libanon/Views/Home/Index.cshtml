@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Libanon.Models.Book>
+
+@{
+    ViewBag.Title = "Index";
+}
+@Styles.Render("~/Content/Site.css")
+
+<h2>Index</h2>
+<a href="~/Home/Create">
+    <button class="button button3">Thêm sách</button>
+</a>
+
+<div class="col-md-12">
+    <div class="col-md-6">
+        @using (Html.BeginForm("MyBook", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <p>Sách của bạn</p>
+                    <input id="MyBook" name="MyBook" type="text" />
+                    <input type="submit" value="Tìm kiếm" />
+                </div>
+                <div class="col-md-6">
+                    <p>Sách đã mượn</p>
+                    <input id="MyBorrower" name="MyBorrower" type="text" />
+                    <input type="submit" value="Tìm kiếm" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="col-md-12">
+    @TempData["Status"]
+</div>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImageUrl)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Authors)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Publisher)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Category)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                <img src="@Url.Content("~/Content/images/"+item.ImageUrl)" height="100" width="100" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Authors)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Publisher)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+
+            <td>
+                @Html.ActionLink("Đặt mượn sách", "Booking", new { id = item.Id }) |
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
