@@ -63,6 +63,7 @@ namespace Libanon.Controllers
                 mailbody += "<br /><br />Xin hãy click vào đường dẫn URL để kích hoạt sách lên hàng chờ";
                 mailbody += "<br /><a href = '" + string.Format($"{Request.Url.Scheme}://{Request.Url.Authority}/Home/ActiveCreate/{book.Id}") + "'>Click here to activate your book.</a>";
                 _bookRepository.SendEmail(title, book.CurrentUser.Email, mailbody);
+                TempData["Status"] = "gửi yêu thêm mới sách thành công";
                 return RedirectToAction("Index");
             }
             else
@@ -113,7 +114,7 @@ namespace Libanon.Controllers
             mailbody += "<br /><br />Yêu cầu mượn sách của bạn đã được chấp nhận!";
             mailbody += "<br /><br />Bạn đã yêu cầu mượn thành công sách " + book.Title;
             mailbody += "<br /><br />Nếu đã nhận được sách bạn vui lòng click vào đường link để xác nhận đã nhận được sách ";
-            mailbody += "<br /><a href = '" + string.Format($"{Request.Url.Scheme}://{Request.Url.Authority}/Home/ReceivedBook/{book.Id}") + "'>Click vào đây nếu bạn đã nhận được sách.</a>";
+            mailbody += "<br /><a href = '" + string.Format($"{Request.Url.Scheme}://{Request.Url.Authority}/Home/ReceivedBorrownerBook/{book.Id}") + "'>Click vào đây nếu bạn đã nhận được sách.</a>";
             _bookRepository.SendEmail(title, book.EmailBorrower, mailbody);
             //gửi mail cho chủ sách
             string title2 = "Xác nhận yêu cầu mượn sách";
@@ -129,6 +130,16 @@ namespace Libanon.Controllers
         {
             Book book = _bookRepository.GetBookById(Id);
             _bookRepository.ReceivedBook(book);
+            return View(book);
+        }
+        public ActionResult ReceivedBorrownerBook(int Id)
+        {
+            Book book = _bookRepository.GetBookById(Id);
+            if(book.WasBorrowed != false)
+            {
+                return View("Chủ sách chưa giao sách!");
+            }
+            _bookRepository.ReceivedBorrownerBook(book);
             return View(book);
         }
         public ActionResult RefuseBooking(int Id)
@@ -158,6 +169,8 @@ namespace Libanon.Controllers
         {
             string EmailOwner = collection.Get("EmailOwner").ToString();
             string PhoneNumberOwner = collection.Get("PhoneNumberOwner").ToString();
+            string FullNameOwner = collection.Get("FullNameOwner").ToString();
+            string DescOwner = collection.Get("DescOwner").ToString();
             Book book = _bookRepository.GetBookById(Id);
             if (EmailOwner != book.EmailBorrower || PhoneNumberOwner != book.PhoneBorrower)
             {
@@ -166,8 +179,8 @@ namespace Libanon.Controllers
             }
             string title = "Xác nhận yêu cầu trả sách";
             string mailbody = "Xin chào " + book.NameBorrower;
-            mailbody += "<br /><br />Bạn có chắc là muốn trả sách hay chưa?";
-            mailbody += "<br /><br />Nếu muốn trả sách " + book.Title;
+            mailbody += "<br /><br />bạn đã trả sách " + book.Title;
+            mailbody += "<br /><br />với lý do " + DescOwner;
             mailbody += "<br /><br />bạn vui lòng click vào đường link để xác nhận yêu cầu trả sách ";
             mailbody += "<br /><a href = '" + string.Format($"{Request.Url.Scheme}://{Request.Url.Authority}/Home/ConfirmReturnBook/{book.Id}") + "'>Click vào đây nếu bạn xác nhận trả sách.</a>";
             _bookRepository.SendEmail(title, book.EmailBorrower, mailbody);
@@ -243,12 +256,24 @@ namespace Libanon.Controllers
                 _bookRepository.UpdateBook(book);
                 TempData["Status"] = "Đã xác thực thay đổi thông tin sách thành công";
             }
+            else
+            {
+                TempData["Error"] = "Mã OTP không chính xác";
+                return RedirectToAction("Index");
+            }
             return RedirectToAction("Index");
         }
         public ActionResult ActiveUpdate(int Id)
         {
             Book book = _bookRepository.GetBookById(Id);
             _bookRepository.ActiveUpdate(book);
+            return View(book);
+        }
+        public ActionResult Rating(int Id)
+        {
+            Book book = _bookRepository.GetBookById(Id);
+            _bookRepository.UpdateBookRating(book);
+            _bookRepository.RatingSameISBN(book);
             return View(book);
         }
     }
