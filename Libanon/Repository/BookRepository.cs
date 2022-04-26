@@ -40,6 +40,7 @@ namespace Libanon.Repository
         }
         public IEnumerable<Book> GetMyBook(string Email)
         {
+            //Lấy thông tin các sách của 1 người sở hữu thông qua Email
             var mybook  = (from s in database.Books
                            where s.CurrentUser.Email.ToUpper() == Email.ToUpper()
                            select s).ToList();
@@ -48,6 +49,7 @@ namespace Libanon.Repository
         }
         public IEnumerable<Book> GetMyBorrowerBook(string EmailBorrower)
         {
+            //Lấy thông tin các sách đã mượn thông qua email
             var myborrowerbook = (from s in database.Books
                                   where s.EmailBorrower.ToUpper() == EmailBorrower.ToUpper()
                                   select s).ToList();
@@ -56,7 +58,9 @@ namespace Libanon.Repository
         }
         public bool Booking(Book book)
         {
+            
             //database.Entry<Book>(book).State = EntityState.Modified;
+            //Lưu thông tin người dùng đặt sách
             var item = database.Books.Find(book.Id);
             item.EmailBorrower = book.EmailBorrower;
             item.NameBorrower = book.NameBorrower;
@@ -68,6 +72,7 @@ namespace Libanon.Repository
         public bool AcceptBooking(Book book)
         {
             //database.Entry<Book>(book).State = EntityState.Modified;
+            //Nếu chủ sở hữu chấp nhận đặt sách => thay đổi tình trạng
             var item = database.Books.Find(book.Id);
             item.Status = true;
             database.SaveChanges();
@@ -76,6 +81,7 @@ namespace Libanon.Repository
         public bool RefuseBooking(Book book)
         {
             //database.Entry<Book>(book).State = EntityState.Modified;
+            //Nếu người dùng từ chối sẽ xóa các thông tin và trả sách lại trên kệ
             var item = database.Books.Find(book.Id);
             item.EmailBorrower = null;
             item.NameBorrower = null;
@@ -87,6 +93,7 @@ namespace Libanon.Repository
         }
         public bool ReceivedBook(Book book)
         {
+            //Xác nhận người chủ sách đã giao sách chưa?
             var item = database.Books.Find(book.Id);
             if(item.WasBorrowed == null)
             {
@@ -97,6 +104,7 @@ namespace Libanon.Repository
         }
         public bool ReceivedBorrownerBook(Book book)
         {
+            //Xác nhận người mượn đã nhận được sách chưa
             var item = database.Books.Find(book.Id);
             if (item.WasBorrowed == false)
             {
@@ -107,6 +115,7 @@ namespace Libanon.Repository
         }
         public bool ReturnBook(Book book)
         {
+            //Người dùng trả sách
             var item = database.Books.Find(book.Id);
             item.Status = false;
             item.EmailBorrower = null;
@@ -118,13 +127,20 @@ namespace Libanon.Repository
         }
         public bool ReturnedBook(Book book)
         {
+            //Xác nhận người mượn đã giao lại sách chưa
             var item = database.Books.Find(book.Id);
             if (item.WasBorrowed == true)
             {
                 item.WasBorrowed = false;
                 database.SaveChanges();
             }
-            else if (item.WasBorrowed == false)
+            return true;
+        }
+        public bool ReturnedOwnerBook(Book book)
+        {
+            //Xác nhận chủ sách đã nhận lại sách chưa
+            var item = database.Books.Find(book.Id);
+            if (item.WasBorrowed == false)
             {
                 item.Status = false;
                 item.WasBorrowed = null;
@@ -134,6 +150,7 @@ namespace Libanon.Repository
         }
         public bool UpdateBook(Book book)
         {
+            //Cập nhật thông tin sách
             var item = database.Books.Find(book.Id);
             item.Title = book.Title;
             item.Authors = book.Authors;
@@ -148,6 +165,7 @@ namespace Libanon.Repository
         }
         public bool Active(Book book)
         {
+            //Kích hoạt sách lên kệ
             var item = database.Books.Find(book.Id);
             item.Status = false;
             database.SaveChanges();
@@ -155,12 +173,14 @@ namespace Libanon.Repository
         }
         public bool ActiveUpdate(Book book)
         {
+            //Xác nhận update sách
             var item = database.Books.Find(book.Id);
             database.SaveChanges();
             return true;
         }
         public void UpdateBookRating(Book book)
         {
+            //Tính điểm đánh giá trung bình cho sách
             Book item = database.Books.Find(book.Id);
             double ratingScore = (book.CurrentISBN.RatingScore 
                 + (item.CurrentISBN.RatingScore * item.CurrentISBN.AmoutRating)) / (item.CurrentISBN.AmoutRating + 1);
@@ -171,6 +191,7 @@ namespace Libanon.Repository
 
         public void RatingSameISBN(Book book)
         {
+            //Các sách có ISBN giống nhau sẽ có điểm đánh giá giống nhau
             IEnumerable<Book> lstbooks = database.Books.Where(b => b.CurrentISBN.ISBNCode == book.CurrentISBN.ISBNCode);
             foreach (var item in lstbooks)
             {
@@ -180,6 +201,7 @@ namespace Libanon.Repository
         }
         public void SendEmail(string MailTitle, string ToEmail, string MailContent)
         {
+            //gửi mail
             MailMessage mail = new MailMessage();
             mail.To.Add(ToEmail);
             mail.From = new MailAddress(ToEmail);

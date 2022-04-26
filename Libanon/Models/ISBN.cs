@@ -15,4 +15,5 @@ namespace Libanon.Models
 
         public virtual Book Book { get; set; }
     }
+    
 }

@@ -23,6 +23,7 @@ namespace Libanon.Repository
         void RatingSameISBN(Book book);
         bool ReturnBook(Book book);
         bool ReturnedBook(Book book);
+        bool ReturnedOwnerBook(Book book);
         bool UpdateBook(Book book);
         bool ActiveUpdate(Book book);
         bool Active(Book book);

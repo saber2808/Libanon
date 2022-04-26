@@ -58,6 +58,7 @@ namespace Libanon.Controllers
             }
             if (_bookRepository.Add(book))
             {
+                //Gửi mail chứa link xác nhận
                 string title = "Xác thực thêm sách mới";
                 string mailbody = "Xin chào " + book.CurrentUser.FullName;
                 mailbody += "<br /><br />Xin hãy click vào đường dẫn URL để kích hoạt sách lên hàng chờ";
@@ -73,6 +74,11 @@ namespace Libanon.Controllers
         public ActionResult Booking(int Id)
         {
             Book book = _bookRepository.GetBookById(Id);
+            if(book.EmailBorrower != null)
+            {
+                TempData["Status"] = "Sách đã có người đặt";
+                return RedirectToAction("Index");
+            }
             return View(book);
         }
         [HttpPost]
@@ -82,6 +88,7 @@ namespace Libanon.Controllers
             if(_bookRepository.GetBookById(Id).EmailBorrower == null)
             {
                 _bookRepository.Booking(book);
+                //Gửi mail xác nhận đặt sách
                 string title = "Xác thực yêu cầu mượn sách";
                 string mailbody = "Xin chào " + book.NameBorrower;
                 mailbody += "<br /><br />Xin hãy click vào đường dẫn URL để gửi yêu cầu mượn sách";
@@ -201,14 +208,24 @@ namespace Libanon.Controllers
             mailbody2 += "<br /><br />Sách" + book.Title + "của bạn sẽ được trả lại bởi " + book.NameBorrower;
             mailbody2 += "<br /><br />Vui lòng liên hệ email " + book.EmailBorrower + "để thực hiện việc nhận sách";
             mailbody += "<br /><br />Nếu bạn đã nhận lại sách thành công vui lòng click vào đường link dưới đây";
-            mailbody2 += "<br /><a href = '" + string.Format($"{Request.Url.Scheme}://{Request.Url.Authority}/Home/ReturnedBook/{book.Id}") + "'>Click vào đây nếu bạn đã nhận được sách.</a>";
+            mailbody2 += "<br /><a href = '" + string.Format($"{Request.Url.Scheme}://{Request.Url.Authority}/Home/ReturnedOwnerBook/{book.Id}") + "'>Click vào đây nếu bạn đã nhận được sách.</a>";
             _bookRepository.SendEmail(title2, book.CurrentUser.Email, mailbody2);
             return View(book);
         }
         public ActionResult ReturnedBook(int Id)
         {
             Book book = _bookRepository.GetBookById(Id);
+            if(book.WasBorrowed != false)
+            {
+                return View("Người mượn chưa trả sách!");
+            }
             _bookRepository.ReturnedBook(book);
+            return View(book);
+        }
+        public ActionResult ReturnedOwnerBook(int Id)
+        {
+            Book book = _bookRepository.GetBookById(Id);
+            _bookRepository.ReturnedOwnerBook(book);
             return View(book);
         }
         public ActionResult ActiveCreate(int Id)
@@ -272,9 +289,14 @@ namespace Libanon.Controllers
         public ActionResult Rating(int Id)
         {
             Book book = _bookRepository.GetBookById(Id);
+            return View(book);
+        }
+        [HttpPost]
+        public ActionResult Rating(Book book)
+        {
             _bookRepository.UpdateBookRating(book);
             _bookRepository.RatingSameISBN(book);
-            return View(book);
+            return RedirectToAction("Index");
         }
     }
 }
