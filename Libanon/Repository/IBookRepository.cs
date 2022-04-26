@@ -18,6 +18,9 @@ namespace Libanon.Repository
         bool AcceptBooking(Book book);
         bool RefuseBooking(Book book);
         bool ReceivedBook(Book book);
+        bool ReceivedBorrownerBook(Book book);
+        void UpdateBookRating(Book book);
+        void RatingSameISBN(Book book);
         bool ReturnBook(Book book);
         bool ReturnedBook(Book book);
         bool UpdateBook(Book book);

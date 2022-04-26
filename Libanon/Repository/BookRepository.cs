@@ -93,7 +93,12 @@ namespace Libanon.Repository
                 item.WasBorrowed = false;
                 database.SaveChanges();
             }
-            else if(item.WasBorrowed == false)
+            return true;
+        }
+        public bool ReceivedBorrownerBook(Book book)
+        {
+            var item = database.Books.Find(book.Id);
+            if (item.WasBorrowed == false)
             {
                 item.WasBorrowed = true;
                 database.SaveChanges();
@@ -153,6 +158,25 @@ namespace Libanon.Repository
             var item = database.Books.Find(book.Id);
             database.SaveChanges();
             return true;
+        }
+        public void UpdateBookRating(Book book)
+        {
+            Book item = database.Books.Find(book.Id);
+            double ratingScore = (book.CurrentISBN.RatingScore 
+                + (item.CurrentISBN.RatingScore * item.CurrentISBN.AmoutRating)) / (item.CurrentISBN.AmoutRating + 1);
+            item.CurrentISBN.RatingScore = Math.Round(ratingScore, 2);
+            item.CurrentISBN.AmoutRating++;
+            database.SaveChanges();
+        }
+
+        public void RatingSameISBN(Book book)
+        {
+            IEnumerable<Book> lstbooks = database.Books.Where(b => b.CurrentISBN.ISBNCode == book.CurrentISBN.ISBNCode);
+            foreach (var item in lstbooks)
+            {
+                item.CurrentISBN.RatingScore = book.CurrentISBN.RatingScore;
+            }
+            database.SaveChanges();
         }
         public void SendEmail(string MailTitle, string ToEmail, string MailContent)
         {
