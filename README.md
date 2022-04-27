@@ -9,7 +9,7 @@
 <li> Mở nuget console: Gõ lệnh 
   <ul>
     <li> enable-migrations</li>
-  <li> add-migration </li>
+  <li> add-migration [Tên class migration]</li>
   <li> update-database </li>
   </ul>
   </li>
