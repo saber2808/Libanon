@@ -4,14 +4,11 @@
     ViewBag.Title = "Index";
 }
 @Styles.Render("~/Content/Site.css")
-
 <h2>Index</h2>
 <a href="~/Home/Create">
     <button class="button button3">Thêm sách</button>
 </a>
 
-<div class="col-md-12">
-    <div class="col-md-6">
         @using (Html.BeginForm("MyBook", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <div class="col-md-12">
@@ -27,9 +24,17 @@
                 </div>
             </div>
         }
-    </div>
+<br />
+<div class="col-md-12">
+    @if (TempData["Status"] != null)
+    {
+        <div class="alert-box success"><span>success: </span>@TempData["Status"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert-box error"><span>error: </span>@TempData["Error"]</div>
+    }
 </div>
-<h4>@TempData["Status"]</h4>
 <table class="table">
     <tr>
         <th>

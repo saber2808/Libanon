@@ -207,7 +207,7 @@ namespace Libanon.Controllers
             string mailbody2 = "Xin chào " + book.CurrentUser.FullName;
             mailbody2 += "<br /><br />Sách" + book.Title + "của bạn sẽ được trả lại bởi " + book.NameBorrower;
             mailbody2 += "<br /><br />Vui lòng liên hệ email " + book.EmailBorrower + "để thực hiện việc nhận sách";
-            mailbody += "<br /><br />Nếu bạn đã nhận lại sách thành công vui lòng click vào đường link dưới đây";
+            mailbody2 += "<br /><br />Nếu bạn đã nhận lại sách thành công vui lòng click vào đường link dưới đây";
             mailbody2 += "<br /><a href = '" + string.Format($"{Request.Url.Scheme}://{Request.Url.Authority}/Home/ReturnedOwnerBook/{book.Id}") + "'>Click vào đây nếu bạn đã nhận được sách.</a>";
             _bookRepository.SendEmail(title2, book.CurrentUser.Email, mailbody2);
             return View(book);
@@ -237,16 +237,16 @@ namespace Libanon.Controllers
         }
         public ActionResult Edit(int Id)
         {
-            Book book = _bookRepository.GetBookById(Id);
+            var book = _bookRepository.GetBookById(Id);
             Random rnd = new Random();
             int num = rnd.Next(100000, 999999);
             book.OTP = num.ToString();
+            _bookRepository.ActiveUpdate(book);
             string title = "Xác thực thay đổi thông tin sách";
             string mailbody = "Xin chào " + book.CurrentUser.FullName;
             mailbody += "<br /><br />Xin hãy click vào đường dẫn URL để xác nhận thay đổi thông tin sách lên hàng chờ";
             mailbody += "<br />" + num;
             _bookRepository.SendEmail(title, book.CurrentUser.Email, mailbody);
-            
             return View(book);
         }
 
@@ -254,7 +254,6 @@ namespace Libanon.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int Id, Book book, HttpPostedFileBase file, FormCollection collection)
         {
-            
             string oldImgBook = _bookRepository.GetBookById(Id).ImageUrl;
             book.ImageUrl = oldImgBook;
             if (file != null)
@@ -267,15 +266,17 @@ namespace Libanon.Controllers
                     book.ImageUrl = _filename;
                 }
             }
-            string otp = collection.Get("OTP").ToString();
-            if (otp == book.OTP)
+            string inputotp = collection.Get("InputOTP").ToString();
+            if (inputotp == _bookRepository.GetBookById(Id).OTP)
             {
+
                 _bookRepository.UpdateBook(book);
                 TempData["Status"] = "Đã xác thực thay đổi thông tin sách thành công";
+                
             }
-            else
+            else if(inputotp != _bookRepository.GetBookById(Id).OTP)
             {
-                TempData["Error"] = "Mã OTP không chính xác";
+                TempData["Error"] = "Mã OTP không chính xác, vui lòng kiểm tra Email để nhận mã OTP mới!";
                 return RedirectToAction("Index");
             }
             return RedirectToAction("Index");
@@ -296,6 +297,7 @@ namespace Libanon.Controllers
         {
             _bookRepository.UpdateBookRating(book);
             _bookRepository.RatingSameISBN(book);
+            TempData["Status"] = "Đánh giá thành công!";
             return RedirectToAction("Index");
         }
     }

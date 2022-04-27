@@ -175,6 +175,7 @@ namespace Libanon.Repository
         {
             //Xác nhận update sách
             var item = database.Books.Find(book.Id);
+            item.OTP = book.OTP;
             database.SaveChanges();
             return true;
         }

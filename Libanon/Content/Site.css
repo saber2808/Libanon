@@ -22,6 +22,16 @@ select,
 textarea {
     max-width: 280px;
 }
+.notification {
+    text-align: center;
+    font-size: 50px;
+    color: #2c2c2c;
+    background-color: #d5d5d5;
+    letter-spacing: .05em;
+    text-shadow: 4px 4px 0px #d5d5d5, 7px 7px 0px rgba(0, 0, 0, 0.2);
+    height: 100px;
+    padding-top: 40px;
+}
 .button {
     background-color: #4CAF50; /* Green */
     border: none;
@@ -44,3 +54,24 @@ textarea {
         background-color: #f44336;
         color: white;
     }
+.alert-box {
+    color: #555;
+    border-radius: 10px;
+    font-family: Tahoma, Geneva, Arial, sans-serif;
+    font-size: 11px;
+    padding: 10px 10px 10px 36px;
+    margin: 10px;
+}
+.alert-box span {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.error {
+    background: #ffecec url('images/error.png') no-repeat 10px 50%;
+    border: 1px solid #f5aca6;
+}
+
+.success {
+    background: #e9ffd9 url('images/success.png') no-repeat 10px 50%;
+    border: 1px solid #a6ca8a;
+}
