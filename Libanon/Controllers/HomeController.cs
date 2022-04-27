@@ -237,6 +237,7 @@ namespace Libanon.Controllers
         }
         public ActionResult Edit(int Id)
         {
+            //Khi vừa load form hệ thống sẽ tạo random 1 mã OTP để gửi về mail cho người dùng
             var book = _bookRepository.GetBookById(Id);
             Random rnd = new Random();
             int num = rnd.Next(100000, 999999);
@@ -244,7 +245,7 @@ namespace Libanon.Controllers
             _bookRepository.ActiveUpdate(book);
             string title = "Xác thực thay đổi thông tin sách";
             string mailbody = "Xin chào " + book.CurrentUser.FullName;
-            mailbody += "<br /><br />Xin hãy click vào đường dẫn URL để xác nhận thay đổi thông tin sách lên hàng chờ";
+            mailbody += "<br /><br />Nhập mã OTP để thay đổi thông tin sản phẩm";
             mailbody += "<br />" + num;
             _bookRepository.SendEmail(title, book.CurrentUser.Email, mailbody);
             return View(book);
@@ -266,6 +267,7 @@ namespace Libanon.Controllers
                     book.ImageUrl = _filename;
                 }
             }
+            //lấy mã OTP người dùng nhập để so sánh với OTP update
             string inputotp = collection.Get("InputOTP").ToString();
             if (inputotp == _bookRepository.GetBookById(Id).OTP)
             {
@@ -277,7 +279,7 @@ namespace Libanon.Controllers
             else if(inputotp != _bookRepository.GetBookById(Id).OTP)
             {
                 TempData["Error"] = "Mã OTP không chính xác, vui lòng kiểm tra Email để nhận mã OTP mới!";
-                return RedirectToAction("Index");
+                return RedirectToAction("Edit");
             }
             return RedirectToAction("Index");
         }

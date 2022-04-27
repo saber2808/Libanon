@@ -347,6 +347,15 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Notification.css" />
+    <Content Include="dist\assets\demo\chart-area-demo.js" />
+    <Content Include="dist\assets\demo\chart-bar-demo.js" />
+    <Content Include="dist\assets\demo\chart-pie-demo.js" />
+    <Content Include="dist\assets\demo\datatables-demo.js" />
+    <Content Include="dist\assets\img\error-404-monochrome.svg" />
+    <Content Include="dist\css\Notification.css" />
+    <Content Include="dist\css\styles.css" />
+    <Content Include="dist\js\datatables-simple-demo.js" />
+    <Content Include="dist\js\scripts.js" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
